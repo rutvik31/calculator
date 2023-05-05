@@ -17,6 +17,7 @@
       right
       app
       class="backgroud"
+      v-model="panel"
     >
       <v-list>
         <v-list-item>
