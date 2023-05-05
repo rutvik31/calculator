@@ -1,35 +1,50 @@
 <template>
-  <v-row class="ma-0">
-    <v-col cols="12" class="text-right">
-      <span class="font-style">
-        {{ result }}
-      </span>
-    </v-col>
-    <v-col v-for="button in buttons" :key="button.label" cols="3" class="pa-1">
-      <v-card
-        elevation="0"
-        outlined
-        tile
-        :color="button.color"
-        @click="handleClick(button.value)"
+  <div>
+    <v-row class="ma-0 overflow">
+      <v-col v-if="lastExp" cols="12" class="text-right p-1">
+        <span class="caption">
+          {{ lastExp }}
+        </span>
+      </v-col>
+      <v-col cols="12" class="text-right pt-1">
+        <span class="font-style">
+          {{ result }}
+        </span>
+      </v-col>
+    </v-row>
+    <v-row id="btns" class="ma-0">
+      <v-col
+        v-for="button in buttons"
+        :key="button.label"
+        cols="3"
+        class="pa-1"
       >
-        <v-card-text class="text-center">
-          <span
-            class="cal-font black--text"
-            :class="{ 'white--text': button.label == '=' }"
-          >
-            {{ button.label }}
-          </span>
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+        <v-card
+          elevation="0"
+          outlined
+          tile
+          :color="button.color"
+          @click="handleClick(button.value)"
+        >
+          <v-card-text class="text-center">
+            <span
+              class="cal-font black--text"
+              :class="{ 'white--text': button.label == '=' }"
+            >
+              {{ button.label }}
+            </span>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      lastExp: "",
       result: "0",
       history: [],
       panel: false,
@@ -102,6 +117,7 @@ export default {
             this.result = `${this.number}${char}${v}`;
             this.calculateValue();
           } else {
+            this.lastExp = `${this.result}/100`;
             this.result = v;
           }
 
@@ -141,10 +157,9 @@ export default {
     },
     calculateValue() {
       const numbers = this.result.split(/[-+*/]/g).filter((v) => !!v);
-      const chars = this.result.split(/[0-9]/g).filter((v) => !!v);
+      const chars = this.result.split(/[0-9]/g).filter((v) => !!v && v != ".");
 
       if (numbers.length == chars.length) chars.pop();
-
       while (true) {
         if (numbers.length == 1) break;
 
@@ -174,6 +189,9 @@ export default {
           case "-":
             numbers.splice(index, 0, `${val1 - val2}`);
             break;
+
+          default:
+            break;
         }
       }
 
@@ -185,6 +203,7 @@ export default {
       localStorage.setItem("history", JSON.stringify(history));
       this.$emit("refereshHistory");
 
+      this.lastExp = this.result;
       this.result = numbers[0];
     },
     checkChar(sChar) {
@@ -223,12 +242,17 @@ export default {
 </script>
 <style>
 .font-style {
-  font-size: 70px !important;
+  font-size: calc(50px + 2vw);
   font-family: "Roboto" !important;
 }
 .cal-font {
   font-size: 20px !important;
   font-family: "Roboto" !important;
+}
+.overflow {
+  word-break: break-all;
+  max-height: calc(100vh - 355px);
+  overflow-y: auto;
 }
 .backgroud {
   background-color: whitesmoke !important;
