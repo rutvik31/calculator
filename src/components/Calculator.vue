@@ -1,28 +1,26 @@
 <template>
   <div>
     <v-toolbar color="primary">
+      <v-btn icon @click="panel = !panel">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
       <v-toolbar-title>Calculator</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-menu offset-y :close-on-content-click="false">
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon>mdi-menu</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item>
-            <v-list-item-title>History</v-list-item-title>
-            <v-list-item-icon @click="clearHistory()">
-              <v-icon>mdi-history</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-          <v-list-item v-for="(entry, index) in history" :key="index">
-            <v-list-item-title>{{ entry.expression }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entry.result }}</v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-toolbar>
+    <v-navigation-drawer v-model="panel" app temporary>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>History</v-list-item-title>
+          <v-list-item-icon @click="clearHistory()">
+            <v-icon>mdi-history</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item v-for="(entry, index) in history" :key="index">
+          <v-list-item-title>{{ entry.expression }}</v-list-item-title>
+          <v-list-item-subtitle>{{ entry.result }}</v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="8" offset-md="2">
@@ -44,6 +42,7 @@
                   class="mb-2"
                 >
                   <v-btn
+                    large
                     :color="button.color"
                     :dark="button.dark"
                     @click="handleClick(button.value)"
@@ -67,7 +66,9 @@ export default {
     return {
       result: "0",
       history: [],
+      panel: false,
       historyVisible: false,
+      hasDecimal: false,
       buttons: [
         { label: "C", value: "clear", color: "grey", dark: true },
         { label: "CE", value: "clearLast", color: "grey", dark: true },
