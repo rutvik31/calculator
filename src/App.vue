@@ -1,6 +1,39 @@
 <template>
   <v-app>
-    <Calculator />
+    <v-app-bar elevation="0" v-if="$vuetify.breakpoint.smAndDown">
+      <v-spacer></v-spacer>
+      <v-btn class="float-right" icon @click="panel = !panel">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <v-main class="backgroud d-flex align-end">
+      <v-container fluid>
+        <Calculator @refereshHistory="refereshHistory" />
+      </v-container>
+    </v-main>
+    <v-navigation-drawer
+      mobile-breakpoint="768"
+      fixed
+      right
+      app
+      class="backgroud"
+    >
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>History</v-list-item-title>
+          <v-list-item-icon @click="clearHistory()">
+            <v-icon>mdi-history</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item v-for="(entry, index) in history" :key="index">
+          <v-list-item-title>{{ entry.expression }}</v-list-item-title>
+          <v-list-item-subtitle>{{ entry.result }}</v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item v-if="!history.length"
+          >There is no history yet</v-list-item
+        >
+      </v-list>
+    </v-navigation-drawer>
   </v-app>
 </template>
 
@@ -8,13 +41,31 @@
 import Calculator from "./components/Calculator.vue";
 export default {
   name: "App",
-
   components: {
     Calculator,
   },
-
-  data: () => ({
-    //
-  }),
+  data() {
+    return {
+      history: [],
+      panel: false,
+    };
+  },
+  methods: {
+    refereshHistory() {
+      this.history = JSON.parse(localStorage.getItem("history")) || [];
+    },
+    clearHistory() {
+      localStorage.removeItem("history");
+      this.refereshHistory();
+    },
+  },
+  mounted() {
+    this.refereshHistory();
+  },
 };
 </script>
+<style>
+.backgroud {
+  background-color: whitesmoke !important;
+}
+</style>

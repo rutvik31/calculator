@@ -1,63 +1,29 @@
 <template>
-  <div>
-    <v-toolbar color="primary">
-      <v-btn icon @click="panel = !panel">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-      <v-toolbar-title>Calculator</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
-    <v-navigation-drawer v-model="panel" app temporary>
-      <v-list>
-        <v-list-item>
-          <v-list-item-title>History</v-list-item-title>
-          <v-list-item-icon @click="clearHistory()">
-            <v-icon>mdi-history</v-icon>
-          </v-list-item-icon>
-        </v-list-item>
-        <v-list-item v-for="(entry, index) in history" :key="index">
-          <v-list-item-title>{{ entry.expression }}</v-list-item-title>
-          <v-list-item-subtitle>{{ entry.result }}</v-list-item-subtitle>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-container fluid>
-      <v-row>
-        <v-col cols="12" md="8" offset-md="2">
-          <v-card class="mb-3">
-            <v-card-text>
-              <v-text-field
-                v-model="result"
-                class="text-right"
-                readonly
-              ></v-text-field>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-row>
-                <v-col
-                  v-for="button in buttons"
-                  :key="button.label"
-                  cols="3"
-                  class="mb-2"
-                >
-                  <v-btn
-                    large
-                    :color="button.color"
-                    :dark="button.dark"
-                    @click="handleClick(button.value)"
-                    :ripple="false"
-                  >
-                    {{ button.label }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+  <v-row class="ma-0">
+    <v-col cols="12" class="text-right">
+      <span class="font-style">
+        {{ result }}
+      </span>
+    </v-col>
+    <v-col v-for="button in buttons" :key="button.label" cols="3" class="pa-1">
+      <v-card
+        elevation="0"
+        outlined
+        tile
+        :color="button.color"
+        @click="handleClick(button.value)"
+      >
+        <v-card-text class="text-center">
+          <span
+            class="cal-font black--text"
+            :class="{ 'white--text': button.label == '=' }"
+          >
+            {{ button.label }}
+          </span>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -70,25 +36,26 @@ export default {
       historyVisible: false,
       hasDecimal: false,
       buttons: [
-        { label: "C", value: "clear", color: "grey", dark: true },
-        { label: "CE", value: "clearLast", color: "grey", dark: true },
-        { label: "%", value: "%", color: "grey", dark: true },
-        { label: "÷", value: "/", color: "orange", dark: false },
-        { label: "7", value: "7", color: "grey", dark: true },
-        { label: "8", value: "8", color: "grey", dark: true },
-        { label: "9", value: "9", color: "grey", dark: true },
-        { label: "×", value: "*", color: "orange", dark: false },
-        { label: "4", value: "4", color: "grey", dark: true },
-        { label: "5", value: "5", color: "grey", dark: true },
-        { label: "6", value: "6", color: "grey", dark: true },
-        { label: "-", value: "-", color: "orange", dark: false },
-        { label: "1", value: "1", color: "grey", dark: true },
-        { label: "2", value: "2", color: "grey", dark: true },
-        { label: "3", value: "3", color: "grey", dark: true },
-        { label: "+", value: "+", color: "orange", dark: false },
-        { label: "0", value: "0", color: "grey", dark: true },
-        { label: ".", value: ".", color: "grey", dark: true },
-        { label: "=", value: "=", color: "orange", dark: false },
+        { label: "C", value: "clear", dark: true },
+        { label: "CE", value: "clearLast", dark: true },
+        { label: "%", value: "%", dark: true },
+        { label: "÷", value: "/", dark: false },
+        { label: "7", value: "7", dark: true },
+        { label: "8", value: "8", dark: true },
+        { label: "9", value: "9", dark: true },
+        { label: "×", value: "*", dark: false },
+        { label: "4", value: "4", dark: true },
+        { label: "5", value: "5", dark: true },
+        { label: "6", value: "6", dark: true },
+        { label: "-", value: "-", dark: false },
+        { label: "1", value: "1", dark: true },
+        { label: "2", value: "2", dark: true },
+        { label: "3", value: "3", dark: true },
+        { label: "+", value: "+", dark: false },
+        { label: "0", value: "0", dark: true },
+        { label: ".", value: ".", dark: true },
+        { label: "Del", value: "delete", dark: true },
+        { label: "=", value: "=", color: "primary", dark: false },
       ],
       chars: ["+", "-", "*", "/"],
     };
@@ -139,21 +106,31 @@ export default {
           }
 
           break;
+
+        case "delete":
+          this.deleteInput();
+          break;
+
         case "-":
           this.checkChar("-");
           break;
+
         case "+":
           this.checkChar("+");
           break;
+
         case "*":
           this.checkChar("*");
           break;
+
         case "/":
           this.checkChar("/");
           break;
+
         case "=":
           this.calculateValue();
           break;
+
         default:
           if (this.result === "0" || isNaN(parseInt(this.result))) {
             this.result = value;
@@ -183,19 +160,19 @@ export default {
 
         switch (char) {
           case "/":
-            numbers.splice(index, 0, val1 / val2);
+            numbers.splice(index, 0, `${val1 / val2}`);
             break;
 
           case "*":
-            numbers.splice(index, 0, val1 * val2);
+            numbers.splice(index, 0, `${val1 * val2}`);
             break;
 
           case "+":
-            numbers.splice(index, 0, val1 + val2);
+            numbers.splice(index, 0, `${val1 + val2}`);
             break;
 
           case "-":
-            numbers.splice(index, 0, val1 - val2);
+            numbers.splice(index, 0, `${val1 - val2}`);
             break;
         }
       }
@@ -206,7 +183,7 @@ export default {
         result: numbers[0],
       });
       localStorage.setItem("history", JSON.stringify(history));
-      this.refereshHistory();
+      this.$emit("refereshHistory");
 
       this.result = numbers[0];
     },
@@ -220,12 +197,13 @@ export default {
       }
       this.result += sChar;
     },
-    refereshHistory() {
-      this.history = JSON.parse(localStorage.getItem("history")) || [];
-    },
-    clearHistory() {
-      localStorage.removeItem("history");
-      this.refereshHistory();
+    deleteInput() {
+      if (this.result == "0") return;
+      this.result = this.result.substring(0, this.result.length - 1);
+      if (!this.result) {
+        this.result = "0";
+        return;
+      }
     },
   },
   mounted() {
@@ -233,11 +211,26 @@ export default {
       if (el.key == "Enter") {
         this.calculateValue();
       }
-      if (/[-+*/%0-9]/.test(el.key)) {
+      if (/^(?!f)[-+*/%.0-9]$/.test(el.key)) {
         this.handleClick(`${el.key}`);
       }
+      if (el.key == "Backspace") {
+        this.deleteInput();
+      }
     });
-    this.refereshHistory();
   },
 };
 </script>
+<style>
+.font-style {
+  font-size: 70px !important;
+  font-family: "Roboto" !important;
+}
+.cal-font {
+  font-size: 20px !important;
+  font-family: "Roboto" !important;
+}
+.backgroud {
+  background-color: whitesmoke !important;
+}
+</style>
