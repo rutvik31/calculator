@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       history: [],
-      panel: false,
+      panel: this.$vuetify.breakpoint.smAndUp,
     };
   },
   methods: {

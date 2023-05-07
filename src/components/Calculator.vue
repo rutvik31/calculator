@@ -80,6 +80,7 @@ export default {
       switch (value) {
         case "clear":
           this.result = "0";
+          this.lastExp = "";
           break;
         case "clearLast":
           while (true) {
@@ -99,31 +100,35 @@ export default {
             .split(/[0-9]/g)
             .filter((v) => !!v && v != ".");
 
-          if (numbers.length == chars.length) chars.pop();
-
-          let number;
-          let char;
-
-          if (chars.length > 1) {
-            number = numbers.splice(numbers.length, 1)[0];
-            char = numbers.splice(chars.length, 1)[0];
-          }
-
-          this.calculateValue();
-          const v = this.result / 100;
-          if (number && v) {
-            v = v * number;
-          }
-
-          if (char) {
-            this.result = `${this.number}${char}${v}`;
-            this.calculateValue();
+          if (!chars.length) {
+            this.result = `${parseFloat(this.result) / 100}`;
           } else {
-            this.lastExp = `${this.result}/100`;
-            this.result = v;
-          }
+            if (numbers.length == chars.length) chars.pop();
 
-          break;
+            let number;
+            let char;
+
+            if (chars.length > 1) {
+              number = numbers.splice(numbers.length, 1)[0];
+              char = numbers.splice(chars.length, 1)[0];
+            }
+
+            this.calculateValue();
+            const v = parseFloat(this.result) / 100;
+            if (number && v) {
+              v = v * number;
+            }
+
+            if (char) {
+              this.result = `${this.number}${char}${v}`;
+              this.calculateValue();
+            } else {
+              this.lastExp = `${this.result}/100`;
+              this.result = `${v}`;
+            }
+
+            break;
+          }
 
         case "delete":
           this.deleteInput();
@@ -160,6 +165,7 @@ export default {
     calculateValue() {
       const numbers = this.result.split(/[-+*/]/g).filter((v) => !!v);
       const chars = this.result.split(/[0-9]/g).filter((v) => !!v && v != ".");
+      if (!chars.length) return;
 
       if (numbers.length == chars.length) chars.pop();
       while (true) {
@@ -206,7 +212,7 @@ export default {
       this.$emit("refereshHistory");
 
       this.lastExp = this.result;
-      this.result = numbers[0];
+      this.result = `${numbers[0]}`;
     },
     checkChar(sChar) {
       if (this.result == "0") return;
