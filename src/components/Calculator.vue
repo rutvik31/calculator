@@ -95,7 +95,9 @@ export default {
           break;
         case "%":
           const numbers = this.result.split(/[-+*/]/g).filter((v) => !!v);
-          const chars = this.result.split(/[0-9]/g).filter((v) => !!v);
+          const chars = this.result
+            .split(/[0-9]/g)
+            .filter((v) => !!v && v != ".");
 
           if (numbers.length == chars.length) chars.pop();
 
