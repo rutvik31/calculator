@@ -76,7 +76,7 @@ export default {
     };
   },
   methods: {
-    handleClick(value) {
+    async handleClick(value) {
       switch (value) {
         case "clear":
           this.result = "0";
@@ -108,19 +108,19 @@ export default {
             let number;
             let char;
 
-            if (chars.length > 1) {
-              number = numbers.splice(numbers.length, 1)[0];
-              char = numbers.splice(chars.length, 1)[0];
+            if (chars.length) {
+              number = numbers.splice(numbers.length - 1, 1)[0];
+              char = chars.splice(chars.length - 1, 1)[0];
             }
 
-            this.calculateValue();
-            const v = parseFloat(this.result) / 100;
+            await this.calculateValue(numbers, chars);
+            let v = parseFloat(this.result) / 100;
             if (number && v) {
               v = v * number;
             }
 
             if (char) {
-              this.result = `${this.number}${char}${v}`;
+              this.result = `${this.result}${char}${v}`;
               this.calculateValue();
             } else {
               this.lastExp = `${this.result}/100`;
@@ -162,10 +162,15 @@ export default {
           }
       }
     },
-    calculateValue() {
-      const numbers = this.result.split(/[-+*/]/g).filter((v) => !!v);
-      const chars = this.result.split(/[0-9]/g).filter((v) => !!v && v != ".");
-      if (!chars.length) return;
+    async calculateValue(numbers, chars) {
+      if (!numbers) numbers = this.result.split(/[-+*/]/g).filter((v) => !!v);
+      if (!chars)
+        chars = this.result.split(/[0-9]/g).filter((v) => !!v && v != ".");
+
+      if (!chars.length) {
+        this.result = `${numbers[0]}`;
+        return;
+      }
 
       if (numbers.length == chars.length) chars.pop();
       while (true) {
@@ -212,7 +217,7 @@ export default {
       this.$emit("refereshHistory");
 
       this.lastExp = this.result;
-      this.result = `${numbers[0]}`;
+      this.result = `${parseFloat(numbers[0]).toFixed(4)}`;
     },
     checkChar(sChar) {
       if (this.result == "0") return;
