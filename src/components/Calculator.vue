@@ -170,10 +170,7 @@ export default {
       if (!chars)
         chars = this.result.split(/[0-9]/g).filter((v) => !!v && v != ".");
 
-      const lastChar = this.result.slice(-1);
-      if (chars.includes(lastChar) && numbers.length > 0) {
-        numbers.push(numbers[numbers.length - 1]);
-      }
+      if (chars.includes(this.result.slice(-1)) && numbers.length == 1) return;
 
       if (!chars.length) {
         this.result = `${numbers[0]}`;
