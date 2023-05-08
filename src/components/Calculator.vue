@@ -75,7 +75,7 @@ export default {
         { label: "Del", value: "delete", dark: true },
         { label: "=", value: "=", color: "primary" },
       ],
-      chars: ["+", "-", "*", "/"],
+      chars: ["+", "-", "*", "/", "."],
     };
   },
   methods: {
@@ -135,6 +135,10 @@ export default {
 
         case "delete":
           this.deleteInput();
+          break;
+
+        case ".":
+          this.checkChar(".");
           break;
 
         case "-":
