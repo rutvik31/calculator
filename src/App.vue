@@ -22,8 +22,8 @@
       <v-list>
         <v-list-item>
           <v-list-item-title>History</v-list-item-title>
-          <v-list-item-icon @click="clearHistory()">
-            <v-icon>mdi-history</v-icon>
+          <v-list-item-icon>
+            <v-icon @click="clearHistory()">mdi-delete</v-icon>
           </v-list-item-icon>
         </v-list-item>
         <v-list-item v-for="(entry, index) in history" :key="index">

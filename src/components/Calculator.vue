@@ -14,8 +14,8 @@
     </v-row>
     <v-row id="btns" class="ma-0">
       <v-col
-        v-for="button in buttons"
-        :key="button.label"
+        v-for="(button, index) in buttons"
+        :key="index"
         cols="3"
         class="pa-1"
       >
@@ -24,12 +24,15 @@
           outlined
           tile
           :color="button.color"
+          :class="{
+            'card-background': index % 2 === 0,
+          }"
           @click="handleClick(button.value)"
         >
           <v-card-text class="text-center">
             <span
               class="cal-font black--text"
-              :class="{ 'white--text': button.label == '=' }"
+              :class="{ 'white--text': index % 2 === 0 }"
             >
               {{ button.label }}
             </span>
@@ -70,7 +73,7 @@ export default {
         { label: "0", value: "0", dark: true },
         { label: ".", value: ".", dark: true },
         { label: "Del", value: "delete", dark: true },
-        { label: "=", value: "=", color: "primary", dark: false },
+        { label: "=", value: "=", color: "primary" },
       ],
       chars: ["+", "-", "*", "/"],
     };
@@ -166,6 +169,11 @@ export default {
       if (!numbers) numbers = this.result.split(/[-+*/]/g).filter((v) => !!v);
       if (!chars)
         chars = this.result.split(/[0-9]/g).filter((v) => !!v && v != ".");
+
+      const lastChar = this.result.slice(-1);
+      if (chars.includes(lastChar) && numbers.length > 0) {
+        numbers.push(numbers[numbers.length - 1]);
+      }
 
       if (!chars.length) {
         this.result = `${numbers[0]}`;
@@ -269,5 +277,8 @@ export default {
 }
 .backgroud {
   background-color: whitesmoke !important;
+}
+.card-background {
+  background-color: gray !important;
 }
 </style>
