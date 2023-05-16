@@ -26,7 +26,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon @click="clearHistory()" v-bind="attrs" v-on="on">mdi-delete</v-icon>
             </template>
-            <span>Clear History</span>
+            <span>Clear all History</span>
           </v-tooltip>
         </v-list-item>
         <v-list-item v-for="(entry, index) in history" :key="index">
