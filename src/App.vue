@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-app-bar elevation="0" v-if="$vuetify.breakpoint.smAndDown">
+    <span class="title-fonts"> Standard </span>
       <v-spacer></v-spacer>
       <v-btn class="float-right" icon @click="panel = !panel">
         <v-icon>mdi-menu</v-icon>
@@ -71,5 +72,8 @@ export default {
 <style>
 .backgroud {
   background-color: whitesmoke !important;
+}
+.title-fonts {
+  font-size: "18px";
 }
 </style>
