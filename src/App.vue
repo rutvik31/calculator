@@ -22,9 +22,12 @@
       <v-list>
         <v-list-item>
           <v-list-item-title>History</v-list-item-title>
-          <v-list-item-icon>
-            <v-icon @click="clearHistory()">mdi-delete</v-icon>
-          </v-list-item-icon>
+          <v-tooltip left nudge-left="0">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon @click="clearHistory()" v-bind="attrs" v-on="on">mdi-delete</v-icon>
+            </template>
+            <span>Clear History</span>
+          </v-tooltip>
         </v-list-item>
         <v-list-item v-for="(entry, index) in history" :key="index">
           <v-list-item-title>{{ entry.expression }}</v-list-item-title>
