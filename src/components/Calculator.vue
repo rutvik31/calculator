@@ -24,15 +24,11 @@
           outlined
           tile
           :color="button.color"
-          :class="{
-            'card-background': index % 2 === 0,
-          }"
           @click="handleClick(button.value)"
         >
           <v-card-text class="text-center">
             <span
               class="cal-font black--text"
-              :class="{ 'white--text': index % 2 === 0 }"
             >
               {{ button.label }}
             </span>
@@ -275,11 +271,5 @@ export default {
   word-break: break-all;
   max-height: calc(100vh - 355px);
   overflow-y: auto;
-}
-.backgroud {
-  background-color: whitesmoke !important;
-}
-.card-background {
-  background-color: gray !important;
 }
 </style>
